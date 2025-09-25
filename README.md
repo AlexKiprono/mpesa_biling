@@ -106,10 +106,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ***📞 CONTACT***
 
+node createAdmin.js <admin@qonnect.com> myStrongPass
+
+
 For inquiries & support, reach out via: 
-
-*(Paid Consultations)* only
-
-📧 Email: gideonpapa9@gmail.com
-
-📱 WhatsApp: https://wa.me/254756521055

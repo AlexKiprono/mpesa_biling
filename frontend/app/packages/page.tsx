@@ -8,7 +8,7 @@ import { Footer } from "@/components/footer"
 import { ToastProvider } from "@/components/toast-provider"
 import { toast } from "sonner"
 import Link from "next/link"
-
+import { useDynamicTitle } from "@/hooks/use-dynamic-title"
 const packages = [
   {
     id: 1,

@@ -6,39 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-model PricingPlan {
-  id          Int       @id @default(autoincrement())
-  name        String // e.g., "Basic Plan"
-  description String? // e.g., "1 hour access"
-  duration    Int // minutes, e.g., 60
-  price       Float // KSh, e.g., 50.00
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  payments    Payment[] // Link to existing Payment model
-}
-
-model SystemSetting {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique // e.g., "mpesa_fee", "default_expiry_hours", "router_ip"
-  value       String // JSON or string, e.g., "5" or '{"fee": 10}'
-  description String?
-  updatedAt   DateTime @updatedAt
-  updatedBy   Int // Foreign key to User.id (admin who changed it)
-  user        User     @relation(fields: [updatedBy], references: [id])
-}
-
-model AuditLog {
-  id        Int      @id @default(autoincrement())
-  action    String // e.g., "PLAN_CREATED"
-  details   Json? // e.g., {planId: 1}
-  userId    Int
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Admin {
@@ -48,38 +17,30 @@ model Admin {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  phone          String          @unique
-  macAddress     String
-  status         String
-  currentPackage String?
-  expiresAt      DateTime?
-  totalSpent     Int             @default(0)
-  sessionsCount  Int             @default(0)
-  lastSeen       DateTime?
-  payments       Payment[]
-  email          String?         @unique
-  isVerified     Boolean         @default(false)
-  profile        Json? // For dynamic user data, e.g., {"preferredPlan": 1}
-  sessions       WifiSession[] // Assuming existing or add if needed
-  auditLogs      AuditLog[]
-  settings       SystemSetting[]
+  id            Int      @id @default(autoincrement())
+  phone         String   @unique
+  macAddress    String
+  status        String
+  currentPackage String? 
+  expiresAt     DateTime?
+  totalSpent    Int      @default(0)
+  sessionsCount Int      @default(0)
+  lastSeen      DateTime?
+  payments      Payment[]
 }
 
 model Payment {
-  id            Int          @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   phone         String
   amount        Int
-  transactionId String       @unique
+  transactionId String   @unique
   macAddress    String
   status        String
-  timePurchased DateTime     @default(now())
+  timePurchased DateTime @default(now())
   mpesaRef      String?
   expiresAt     DateTime?
   userId        Int?
-  user          User?        @relation(fields: [userId], references: [id])
-  planId        Int?
-  plan          PricingPlan? @relation(fields: [planId], references: [id])
+  user          User?    @relation(fields: [userId], references: [id])
 }
 
 model SupportRequest {
@@ -87,15 +48,4 @@ model SupportRequest {
   phone     String
   message   String
   createdAt DateTime @default(now())
-}
-
-model WifiSession {
-  id         Int       @id @default(autoincrement())
-  userId     Int
-  user       User      @relation(fields: [userId], references: [id])
-  macAddress String
-  startTime  DateTime  @default(now())
-  endTime    DateTime?
-  duration   Int? // minutes, optional
-  createdAt  DateTime  @default(now())
 }
